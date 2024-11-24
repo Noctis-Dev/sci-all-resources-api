@@ -2,10 +2,10 @@ import amqplib from 'npm:amqplib';
 
 const rabbitSettings = {
   protocol: 'amqp',
-  hostname: '50.19.40.173',
+  hostname: Deno.env.get('R_HOSTNAME'),
   port: 5672,
-  username: 'guest',
-  password: 'guest'
+  username: Deno.env.get('R_USER'),
+  password: Deno.env.get('R_PASSWORD'),
 }
 
 export const startRabbitMQConsumer = async (processMessage: (msg: any) => Promise<void>) => {
@@ -17,9 +17,15 @@ export const startRabbitMQConsumer = async (processMessage: (msg: any) => Promis
 
   channel.consume(queue, async (msg: amqplib.ConsumeMessage | null) => {
     if (msg !== null) {
-      const content = JSON.parse(msg.content.toString());
-      await processMessage(content);
-      channel.ack(msg);
+        const content = JSON.parse(msg.content.toString());
+        console.log("Mensaje recibido: ", content);
+
+        console.log("Tamaño del recurso:", content.resource?.length);
+        console.log("Inicio del recurso:", content.resource?.substring(0, 100)); // Muestra los primeros 100 caracteres
+        console.log("Fin del recurso:", content.resource?.substring(content.resource.length - 100)); // Muestra los últimos 100 caracteres
+
+        await processMessage(content);
+        channel.ack(msg);
     }
-  });
+});
 };

@@ -1,17 +1,22 @@
 import { ResourceRepository } from '../repositories/ResourceRepository.ts';
 import { Resource } from '../entities/Resource.ts';
-import { v4 as uuidv4 } from 'npm:uuid';
 
 export class ResourceService {
   constructor(private resourceRepository: ResourceRepository) {}
 
-  async createResource(usuario_uuid: string, url: string, tipo_recurso: string): Promise<void> {
-    const resource: Resource = {
-      recurso_uuid: uuidv4(),
-      usuario_uuid,
-      url,
-      tipo_recurso,
-    };
+  async createResource(resource: Resource): Promise<void> {
     await this.resourceRepository.save(resource);
   }
+
+  async getResourcesByOwnerUUID(ownerUUID: string): Promise<Resource[]> {
+    console.log('Buscando recursos para owner_uuid:', ownerUUID); // Log del UUID recibido
+    const resources = await this.resourceRepository.findByOwnerUUID(ownerUUID);
+    console.log('Recursos obtenidos del repositorio:', resources); // Log del resultado
+    return resources;
+  }
+
+  async getResourcesByType(resourceType: string): Promise<Resource[]> {
+    return await this.resourceRepository.findByType(resourceType);
+  }
 }
+

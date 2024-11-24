@@ -1,2 +1,6 @@
 .vscode
 .env
+~
+Dockerfile
+resorces_api.exe
+sci-all-resources-api
