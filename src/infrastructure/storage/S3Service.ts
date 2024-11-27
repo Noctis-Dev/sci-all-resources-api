@@ -21,6 +21,7 @@ export class S3Service {
       Key: fileName, // Nombre del archivo en S3
       Body: fileContent,
       ContentType: this.getContentType(fileName),
+      ACL: 'public-read', // Hacer el archivo público
     };
 
     const { Location } = await this.s3.upload(params).promise();

@@ -33,13 +33,7 @@ router.get('/resources/publication/:owner_uuid', async (req: Request, res: Respo
       return res.status(404).json({ error: 'No se encontró un PDF para esta publicación' });
     }
 
-    // Descargar el archivo desde S3
-    const pdfBlob = await s3Service.downloadFile(pdfResource.url);
-
-    // Convertir el archivo a base64
-    const base64Data = pdfBlob.toString('base64');
-
-    res.json({ data: base64Data });
+    res.json({ data: pdfResource.url });
   } catch (error) {
     console.error('Error al obtener el PDF:', error);
     res.status(500).json({ error: 'Error al obtener el PDF' });
